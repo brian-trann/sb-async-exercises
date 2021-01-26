@@ -5,26 +5,58 @@ document.addEventListener('DOMContentLoaded', async () => {
 	const cardImg = document.querySelector('.card-img');
 	const drawCardButton = document.querySelector('.draw-card');
 
+	/**
+   * Number Facts
+   */
+	// Promise NumberFacts-1
 	const getFact = () => {
 		fetch('http://numbersapi.com/1?json').then((res) => res.json()).then((data) => console.log(data.text));
 	};
-	// getFact();
+	getFact();
 
-	let promiseArr = [];
-	for (let i = 1; i <= 5; i++) {
-		promiseArr.push(fetch(`http://numbersapi.com/${i}?json`));
-	}
+	// Async NumberFact
+	const getAsyncFact = async () => {
+		const res = await fetch('http://numbersapi.com/1?json');
+		const data = res.json();
+		return data;
+	};
+	getAsyncFact();
 
-	Promise.all(promiseArr).then((promiseArr) => {
-		promiseArr.forEach((response) =>
-			response.json().then((data) => {
-				const newP = document.createElement('p');
-				newP.innerText = data.text;
-				partOne.append(newP);
+	// Promise NumberFacts-
+	const favNum = 4;
+	Promise.all(
+		Array.from({ length: 4 }, async () => {
+			const res = await fetch(`http://numbersapi.com/${favNum}?json`);
+			const data = await res.json();
+			return data;
+		})
+	).then((facts) =>
+		facts.forEach((data) => {
+			const newP = document.createElement('p');
+			newP.innerText = data.text;
+			partOne.append(newP);
+		})
+	);
+	// Async NumberFacts
+	const getAsyncNumFacts = async (favNum) => {
+		const facts = await Promise.all(
+			Array.from({ length: 4 }, async () => {
+				const res = await fetch(`http://numbersapi.com/${favNum}?json`);
+				const data = await res.json();
+				return data;
 			})
 		);
-	});
+		facts.forEach((data) => {
+			const newP = document.createElement('p');
+			newP.innerText = data.text;
+			partOne.append(newP);
+		});
+	};
 
+	/**
+   * Deck of Cards
+   */
+	// Async
 	const getDeckId = async () => {
 		const res = await fetch('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1');
 		const data = await res.json();
@@ -57,4 +89,5 @@ document.addEventListener('DOMContentLoaded', async () => {
 		const newCard = await drawFromDeck(deckId);
 		handleCard(newCard);
 	});
+	// end Async
 });
