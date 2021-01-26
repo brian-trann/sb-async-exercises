@@ -56,6 +56,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 	/**
    * Deck of Cards
    */
+	// Promises
+	let deckIdPromise;
+	fetch('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1')
+		.then((data) => {
+			deckIdPromise = data.deck_id;
+		})
+		.catch((e) => console.log(e));
+
+	let cardObjPromise;
+	fetch(`https://deckofcardsapi.com/api/deck/${deckIdPromise}/draw/?count=1`)
+		.then((data) => (cardObjPromise = data))
+		.catch((e) => console.log(e));
+
 	// Async
 	const getDeckId = async () => {
 		const res = await fetch('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1');
